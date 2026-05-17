@@ -9,6 +9,8 @@ from dataclasses import dataclass
 class ChatbotFramework:
     """Simple rule-based WhatsApp chatbot for learning and freelance projects."""
 
+    GREETINGS = {"oi", "olá", "ola"}
+
     welcome_message: str = (
         "Olá! Sou um chatbot de suporte. Envie 'menu' para ver as opções."
     )
@@ -19,7 +21,7 @@ class ChatbotFramework:
         if not message:
             return self.welcome_message
 
-        if message in {"oi", "olá", "ola"}:
+        if message in self.GREETINGS:
             return self.welcome_message
 
         if message == "menu":

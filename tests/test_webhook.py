@@ -1,4 +1,6 @@
+import os
 import unittest
+from unittest.mock import patch
 
 from chatbot_whatsapp import create_app
 
@@ -29,6 +31,16 @@ class WhatsAppWebhookTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         body = response.get_data(as_text=True)
         self.assertIn("Não entendi", body)
+
+    def test_invalid_twilio_signature_returns_403(self) -> None:
+        with patch.dict(os.environ, {"TWILIO_AUTH_TOKEN": "fake-token"}, clear=False):
+            app = create_app()
+            app.config.update(TESTING=True)
+            client = app.test_client()
+
+            response = client.post("/webhook/whatsapp", data={"Body": "menu"})
+
+            self.assertEqual(response.status_code, 403)
 
 
 if __name__ == "__main__":
